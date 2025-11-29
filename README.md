@@ -1,2 +1,2 @@
 # cpp-template
-C++ Project Template
+C++ Starter Template
