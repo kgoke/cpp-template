@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(cpp_template
     VERSION 0.1.0
-    DESCRIPTION "Minimal C/C++ project with CMake and clang-format"
+    DESCRIPTION "Minimal C/C++ project with CMake, clang-format, Conan, and Catch2 tests"
     LANGUAGES C CXX)
 
 # ------------------------------
@@ -16,23 +16,34 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # ------------------------------
-# Main executable
+# Library with shared code
 # ------------------------------
-add_executable(${PROJECT_NAME}
-    src/main.cpp
+add_library(project_lib
     src/add.cpp
 )
 
-target_include_directories(${PROJECT_NAME}
+target_include_directories(project_lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# Basic warnings
+# ------------------------------
+# Main executable
+# ------------------------------
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE project_lib
+)
+
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    target_compile_options(project_lib PRIVATE /W4)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(project_lib PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # ------------------------------
@@ -43,6 +54,7 @@ file(GLOB_RECURSE ALL_SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/*.cpp
     ${CMAKE_SOURCE_DIR}/include/*.h
     ${CMAKE_SOURCE_DIR}/include/*.hpp
+    ${CMAKE_SOURCE_DIR}/tests/*.cpp
 )
 
 add_custom_target(format
@@ -55,24 +67,36 @@ add_custom_target(format-check
     COMMENT "Checking code format with clang-format (no changes made)"
 )
 
-# --------------------------------------------------------------------
-# HOW TO ADD MORE FILES LATER:
-#
-# 1) Drop new .c/.cpp files into src/, e.g.:
-#       src/math.c
-#       src/renderer.cpp
-#
-# 2) Add them to the executable:
-#
-#    add_executable(${PROJECT_NAME}
-#        src/main.cpp
-#        src/math.c
-#        src/renderer.cpp
-#    )
-#
-# If you start using headers:
-#   - Put public headers in include/project/
-#   - Include them as "project/foo.hpp"
-#   - They are already on the include path via target_include_directories.
-# --------------------------------------------------------------------
+# ------------------------------
+# Tests with Catch2 (via Conan)
+# ------------------------------
+include(CTest)
+enable_testing()
+
+# Catch2 is provided by Conan (CMakeDeps + toolchain)
+find_package(Catch2 CONFIG REQUIRED)
+
+add_executable(cpp_template_tests
+    tests/test_add.cpp
+)
+
+target_link_libraries(cpp_template_tests
+    PRIVATE
+        project_lib
+        Catch2::Catch2WithMain
+)
+
+target_include_directories(cpp_template_tests
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+if (MSVC)
+    target_compile_options(cpp_template_tests PRIVATE /W4)
+else()
+    target_compile_options(cpp_template_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+include(Catch)
+catch_discover_tests(cpp_template_tests)
 
