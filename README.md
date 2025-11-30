@@ -6,6 +6,7 @@ A modern C/C++ starter template featuring:
 - **CMake** - build system
 - **Catch2** - unit testing
 - **clang-format** - code formatting
+- **Doxygen** - documentation
 - **project.sh** - automated script for all workflow tasks
 
 ## Quick Start
@@ -74,6 +75,7 @@ Make sure you have installed:
 - **CMake 3.20+**
 - **Conan 2.x**
 - **clang-format**
+- **Doxygen**
 
 ## Testing
 
@@ -96,6 +98,16 @@ Format all C/C++ source and header files:
 This runs both:
 - `format` - auto-format code
 - `format-check` - verifying formatting
+
+## Documentation
+
+Documentation is handled by Doxygen, to generate docs run:
+
+```bash
+./project.sh docs
+```
+
+This will generate the documentation in the `docs_output/` directory.
 
 ## Cleaning
 

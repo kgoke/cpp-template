@@ -100,3 +100,21 @@ endif()
 include(Catch)
 catch_discover_tests(cpp_template_tests)
 
+# ------------------------------
+# Doxygen documentation
+# ------------------------------
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
+
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_IN}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM)
+else()
+    message(STATUS "Doxygen not found. 'docs' target will be unavailable.")
+endif()
+
+

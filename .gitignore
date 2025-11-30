@@ -2,6 +2,9 @@
 build/
 conan/
 
+# Doxygen output
+docs_output/
+
 # CMake local files
 CMakeUserPresets.json
 CMakeCache.txt

@@ -1,0 +1,16 @@
+i# Doxygen configuration for cpp-template
+
+PROJECT_NAME           = "cpp-template"
+OUTPUT_DIRECTORY       = ../docs_output
+
+INPUT                  = ../include ../src
+RECURSIVE              = YES
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+QUIET                  = NO
+WARNINGS               = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+

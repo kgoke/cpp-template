@@ -89,6 +89,11 @@ function run_tests() {
   ctest --test-dir "$BUILD_DIR"
 }
 
+function generate_docs() {
+  echo "[DOCS] Generating Doxygen documentation..."
+  cmake --build "$BUILD_DIR" --target docs
+}
+
 function clean() {
   ensure_not_in_build_dirs
   echo "[CLEAN] Removing '$BUILD_DIR/' and '$CONAN_DIR/'..."
@@ -127,6 +132,7 @@ Commands:
   run          Run the built executable ($PROJECT_NAME)
   format       Run clang-format (format + format-check)
   test         Build and run tests (ctest)
+  docs         Generate Doxygen documentation
   clean        Remove '$BUILD_DIR/' and '$CONAN_DIR/'
   rebuild      Clean everything, then run full setup
 
@@ -165,6 +171,9 @@ format)
   ;;
 test)
   run_tests
+  ;;
+docs)
+  generate_docs
   ;;
 clean)
   clean
